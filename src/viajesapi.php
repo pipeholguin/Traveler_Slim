@@ -104,22 +104,6 @@ $app->post("/usuario", function($request, $response,$args){
 
 });
 
-$app->get("/usuario", function($request, $response, $args){
-
-  $query = $this->db->prepare("SELECT usuario,contrasena FROM usuario");
-  $query->execute();
-
-  $results = $query->fetchAll(PDO::FETCH_ASSOC);
-
-  $response = $response->withStatus(200);
-  $response = $response->withHeader("Content-Type","application/json");
-
-  $body =  $response->getBody();
-  $body->write(json_encode($results));
-
-  return $response;
-
-});
 
 $app->post("/usuario/login", function($request, $response,$args){
 
@@ -134,7 +118,7 @@ $app->post("/usuario/login", function($request, $response,$args){
   $rta = "";
 
   if(count($results)>0){
-    $rta = json_encode(array("status"=>"OK"));
+    $rta = json_encode(array("status"=>"OK","usuario"=>$body->usuario));
   }else{
     $rta = json_encode(array("status"=>"FAIL"));
   }
@@ -145,4 +129,24 @@ $app->post("/usuario/login", function($request, $response,$args){
   $bodyResponse->write($rta);
   return $response;
 
+});
+
+$app->put("/usuario/{id}", function($request, $response, $args){
+  $id = $args["id"];
+  $body = $request->getBody();
+  $body = json_decode($body);
+  $query = $this->db->prepare("UPDATE usuario SET nombre = :no , email = :em, celular = :ce ,  usuario = :us, contrasena = :co WHERE id = :idu" );
+  $status = $query->execute(array(":no"=>$body->nombre, ":em"=>$body->email, ":ce"=>$body->celular,":us"=>$body->usuario, ":co"=>$body->contrasena, ":idu"=>$id));
+  $rta = "";
+  if($status){
+    $response = $response->withStatus(200);
+    $rta = json_encode(array("status"=>"OK"));
+  }else{
+    $response = $response->withStatus(500);
+    $rta = json_encode(array("status"=>"FAIL"));
+  }
+  $response = $response->withHeader("Content-Type", "application/json");
+  $bodyResponse =  $response->getBody();
+  $bodyResponse->write($rta);
+  return $response;
 });
