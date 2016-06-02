@@ -50,7 +50,7 @@ $name = date_format(new DateTime(), "Y_m_d_H_i_s");
 $file = fopen("images/".$name.".png","w");
 fwrite($file,$img);
 fclose($file);
-$url = "http://localhost/traveler/public/images/".$name.".png";
+$url = "http://http://unicauca.esy.es/traveler/public/images/".$name.".png";
 
   $query = $this->db->prepare("INSERT INTO viajes (origen, destino, precio, asientos, hora, fecha, carro, imagen, contacto)"
    ."VALUES (:or,:de,:pr,:as,:ho,:fe,:ca,:im,:co)");
