@@ -103,9 +103,9 @@ $app->post("/usuario", function($request, $response,$args){
 
 
 $app->get("/usuario/{usuario}", function($request, $response, $args){
-  $usuario  = $args["usuario"];
-  $query = $this->db->prepare("SELECT * FROM usuario WHERE usuario = ".$usuario);
-  $query->execute();
+  $usuario = $args["usuario"];
+  $query = $this->db->prepare("SELECT * FROM usuario WHERE usuario = :u");
+  $query->execute(array(":u"=>$usuario));
   $results = $query->fetchAll(PDO::FETCH_ASSOC);
   $response = $response->withHeader("Content-Type","application/json");
   if(count($results)>0){
@@ -115,6 +115,7 @@ $app->get("/usuario/{usuario}", function($request, $response, $args){
   }else{
     $response = $response->withStatus(404);
   }
+  //echo "ARG USR: ".$usuario." Results?: ".count($results);
   return $response;
 });
 
@@ -200,7 +201,7 @@ $app->get("/reservas/{user}", function($request, $response, $args){
   //$query = $this->db->prepare("SELECT id_viaje FROM usuario_viajes WHERE user = :u");
   $query = $this->db->prepare("SELECT viajes.* FROM usuario_viajes INNER JOIN viajes ON viajes.id = usuario_viajes.id_viaje AND usuario_viajes.user = :u ORDER BY viajes.id DESC");
   $query->execute(array(":u"=>$user));
-  $query->execute();
+  //$query->execute();
 
   $results = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -218,3 +219,4 @@ $app->get("/reservas/{user}", function($request, $response, $args){
   return $response;
 
 });
+	
