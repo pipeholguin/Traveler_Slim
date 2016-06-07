@@ -2,7 +2,7 @@
 
 $app->get("/viajes", function($request, $response, $args){
 
-  $query = $this->db->prepare("SELECT * FROM viajes WHERE fecha >= CURDATE() ORDER BY fecha ASC");
+  $query = $this->db->prepare("SELECT * FROM viajes WHERE fecha >= CURDATE()");
   $query->execute();
 
   $results = $query->fetchAll(PDO::FETCH_ASSOC);
@@ -178,11 +178,12 @@ $app->get("/reservas/{user}", function($request, $response, $args){
 
   $user = $args["user"];
   /*SELECT viajes.destino
-FROM usuario_viajes AS uv
-INNER JOIN viajes ON viajes.id = uv.id_viaje AND uv.user = 'luis'*/
-  //$query = $this->db->prepare("SELECT * FROM usuario_viajes WHERE user = :u");
-  $query = $this->db->prepare("SELECT * FROM usuario_viajes WHERE user = :u");
+  FROM usuario_viajes AS uv
+  INNER JOIN viajes ON viajes.id = uv.id_viaje AND uv.user = 'luis'*/
+  //$query = $this->db->prepare("SELECT id_viaje FROM usuario_viajes WHERE user = :u");
+  $query = $this->db->prepare("SELECT viajes.* FROM usuario_viajes INNER JOIN viajes ON viajes.id = usuario_viajes.id_viaje AND usuario_viajes.user = :u ORDER BY viajes.id DESC");
   $query->execute(array(":u"=>$user));
+  $query->execute();
 
   $results = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -190,7 +191,7 @@ INNER JOIN viajes ON viajes.id = uv.id_viaje AND uv.user = 'luis'*/
   if(count($results)>0){
       $response = $response->withStatus(200);
       $body =  $response->getBody();
-      $body->write(json_encode($results[0]));
+      $body->write(json_encode($results));
   }else{
     echo "user: ".$user;
     echo "response: ".$response;
