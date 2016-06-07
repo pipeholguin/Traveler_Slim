@@ -50,7 +50,7 @@ $name = date_format(new DateTime(), "Y_m_d_H_i_s");
 $file = fopen("images/".$name.".png","w");
 fwrite($file,$img);
 fclose($file);
-$url = "http://localhost/traveler/public/images/".$name.".png";
+$url = "http://http://unicauca.esy.es/traveler/public/images/".$name.".png";
 
   $query = $this->db->prepare("INSERT INTO viajes (origen, destino, precio, asientos, hora, fecha, carro, imagen, contacto)"
    ."VALUES (:or,:de,:pr,:as,:ho,:fe,:ca,:im,:co)");
@@ -99,6 +99,23 @@ $app->post("/usuario", function($request, $response,$args){
   $bodyResponse->write($rta);
   return $response;
 
+});
+
+
+$app->get("/usuario/{id}", function($request, $response, $args){
+  $id  = $args["id"];
+  $query = $this->db->prepare("SELECT * FROM usuario WHERE id = ".$id);
+  $query->execute();
+  $results = $query->fetchAll(PDO::FETCH_ASSOC);
+  $response = $response->withHeader("Content-Type","application/json");
+  if(count($results)>0){
+      $response = $response->withStatus(200);
+      $body =  $response->getBody();
+      $body->write(json_encode($results[0]));
+  }else{
+    $response = $response->withStatus(404);
+  }
+  return $response;
 });
 
 
