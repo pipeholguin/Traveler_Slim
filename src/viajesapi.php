@@ -102,6 +102,23 @@ $app->post("/usuario", function($request, $response,$args){
 });
 
 
+$app->get("/usuario/{id}", function($request, $response, $args){
+  $id  = $args["id"];
+  $query = $this->db->prepare("SELECT * FROM usuario WHERE id = ".$id);
+  $query->execute();
+  $results = $query->fetchAll(PDO::FETCH_ASSOC);
+  $response = $response->withHeader("Content-Type","application/json");
+  if(count($results)>0){
+      $response = $response->withStatus(200);
+      $body =  $response->getBody();
+      $body->write(json_encode($results[0]));
+  }else{
+    $response = $response->withStatus(404);
+  }
+  return $response;
+});
+
+
 $app->post("/usuario/login", function($request, $response,$args){
 
   $body = $request->getBody();
