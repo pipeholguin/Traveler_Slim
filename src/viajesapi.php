@@ -102,9 +102,9 @@ $app->post("/usuario", function($request, $response,$args){
 });
 
 
-$app->get("/usuario/{id}", function($request, $response, $args){
-  $id  = $args["id"];
-  $query = $this->db->prepare("SELECT * FROM usuario WHERE id = ".$id);
+$app->get("/usuario/{usuario}", function($request, $response, $args){
+  $usuario  = $args["usuario"];
+  $query = $this->db->prepare("SELECT * FROM usuario WHERE usuario = ".$usuario);
   $query->execute();
   $results = $query->fetchAll(PDO::FETCH_ASSOC);
   $response = $response->withHeader("Content-Type","application/json");
