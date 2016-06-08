@@ -146,12 +146,12 @@ $app->post("/usuario/login", function($request, $response,$args){
 
 });
 
-$app->put("/usuario/{id}", function($request, $response, $args){
-  $id = $args["id"];
+$app->put("/usuario/{usuario}", function($request, $response, $args){
+  $usuario = $args["usuario"];
   $body = $request->getBody();
   $body = json_decode($body);
-  $query = $this->db->prepare("UPDATE usuario SET nombre = :no , email = :em, celular = :ce ,  usuario = :us, contrasena = :co WHERE id = :idu" );
-  $status = $query->execute(array(":no"=>$body->nombre, ":em"=>$body->email, ":ce"=>$body->celular,":us"=>$body->usuario, ":co"=>$body->contrasena, ":idu"=>$id));
+  $query = $this->db->prepare("UPDATE usuario SET nombre = :no , email = :em, celular = :ce , contrasena = :co WHERE usuario = :us" );
+  $status = $query->execute(array(":no"=>$body->nombre, ":em"=>$body->email, ":ce"=>$body->celular,":us"=>$body->usuario, ":co"=>$body->contrasena));
   $rta = "";
   if($status){
     $response = $response->withStatus(200);
